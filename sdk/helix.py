@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional, Set
 
 from .certification import MissionCertificationError, MissionTracker
 from .errors import VerificationError
+from .persistence import MissionStore, DurableMissionStore
 
 
 class HelixError(Exception):
@@ -31,14 +32,57 @@ class HelixDecision:
 class HelixOrchestrator:
     """Binding gatekeeper - prevents false completion and task splitting."""
 
-    def __init__(self) -> None:
+    def __init__(self, persist: bool = True, store_path: str | None = None) -> None:
         self.missions: Dict[str, MissionTracker] = {}
         self.executors: Set[str] = set()
         self.verifiers: Set[str] = set()
+        self.store = DurableMissionStore(store_path) if persist else None
+        self._load()
+
+    def _save(self):
+        if not self.store:
+            return
+        data = {}
+        for mid, tracker in self.missions.items():
+            data[mid] = {
+                'mission_id': tracker.mission_id,
+                'required_criteria': list(tracker.required_criteria),
+                'covered_criteria': list(tracker.covered_criteria),
+                'max_splits': tracker.max_splits,
+                'falsified': tracker.falsified,
+                'readback_refs': list(tracker.readback_refs),
+                'independent_verifications': tracker.independent_verifications,
+                'executor_ids': list(tracker.executor_ids),
+                'verifier_ids': list(tracker.verifier_ids),
+                'receipts': tracker.receipts,
+                'churn_count': tracker.churn_count,
+            }
+        self.store.save(data)
+
+    def _load(self):
+        if not self.store:
+            return
+        data = self.store.load()
+        for mid, d in data.items():
+            tracker = MissionTracker(
+                mission_id=mid,
+                required_criteria=set(d.get('required_criteria', [])),
+                max_splits=d.get('max_splits', 25)
+            )
+            tracker.covered_criteria = set(d.get('covered_criteria', []))
+            tracker.falsified = d.get('falsified', False)
+            tracker.readback_refs = set(d.get('readback_refs', []))
+            tracker.independent_verifications = d.get('independent_verifications', 0)
+            tracker.executor_ids = set(d.get('executor_ids', []))
+            tracker.verifier_ids = set(d.get('verifier_ids', []))
+            tracker.receipts = d.get('receipts', [])
+            tracker.churn_count = d.get('churn_count', 0)
+            self.missions[mid] = tracker
 
     def start_mission(self, mission_id: str, criteria: Set[str], max_splits: int = 25) -> HelixDecision:
         tracker = MissionTracker(mission_id=mission_id, required_criteria=set(criteria), max_splits=max_splits)
         self.missions[mission_id] = tracker
+        self._save()
         return HelixDecision(
             phase="analyze",
             action="mission_started",
@@ -164,8 +208,10 @@ class HelixOrchestrator:
                 verifier_id=verifier_id,
             )
         except MissionCertificationError as e:
+            self._save()
             return HelixDecision(phase="block", action="blocked", blocked=True, reason=str(e))
 
+        self._save()
         return self.analyze(mission_id)
 
     def certify(self, mission_id: str) -> Dict[str, Any]:
@@ -173,4 +219,6 @@ class HelixOrchestrator:
         if not tracker:
             raise HelixError("mission not found")
         # Only Helix may certify
-        return tracker.certify()
+        result = tracker.certify()
+        self._save()
+        return result

@@ -367,3 +367,26 @@ class AutoRouter:
                 last_err = e
                 decision = self.router.advance_on_failure(decision, model.id, error=str(e))
         raise last_err or RuntimeError("All models failed")
+
+
+class CoverageAwareRouter(AutoRouter):
+    """Routes to maximize coverage gain, penalize churn harder."""
+
+    def route_for_coverage(self, helix, mission_id: str):
+        if mission_id not in helix.missions:
+            return self.route(task_type="reasoning", required_capabilities=("reasoning","coding"), min_context=131072)
+        tracker = helix.missions[mission_id]
+        missing = list(tracker.required_criteria - tracker.covered_criteria)
+        if not missing:
+            return self.route(task_type="reasoning", required_capabilities=("reasoning",), min_context=65536)
+        # Prioritize closing specific criterion - use powerful models
+        decision = self.route(task_type="reasoning", required_capabilities=("reasoning", "coding", "analysis"), min_context=131072)
+        decision.rationale = f"Close criterion {missing[0]} (coverage gain priority). Churn penalty applied. {decision.rationale}"
+        return decision
+
+    def score_with_coverage(self, model, request, coverage_gain: float = 1.0, churn_penalty: float = 0.5):
+        base = self.router.score(model, request) if self.router else 5.0
+        # weight coverage gain highest
+        score = base * (1.0 - coverage_gain * 0.4) + coverage_gain * 10.0 * 0.4
+        score = score * (1.0 - churn_penalty * 0.1)
+        return round(min(max(score, 0), 10.0), 3)

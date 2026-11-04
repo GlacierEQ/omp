@@ -18,6 +18,7 @@ from .receipts import ReceiptStore
 from .runtime import ConnectorRuntimeClient
 from .helix import HelixOrchestrator
 from .certification import MissionTracker, MissionCertificationError
+from .mission_batch import MissionBatchExecutor
 
 # Import the omp router lazily so the SDK can be imported even when the omp
 # package path isn't on sys.path; the unified client wires it in.
@@ -71,6 +72,8 @@ class GlaciereqSDK:
         self._router_roster_path = router_roster
         self.helix = HelixOrchestrator()
         self.missions: dict = {}
+        self.auto_missions = True
+        self.batch_executor = MissionBatchExecutor(self.helix)
 
     # ---------- model router (best-agent fallback) ----------
 
@@ -192,11 +195,27 @@ class GlaciereqSDK:
         *,
         human_approved: bool = False,
         verify: bool = True,
+        mission_id: str | None = None,
+        auto_helix: bool = True,
+        executor_id: str = "sdk-client",
+        verifier_id: str | None = None,
+        readback_ref: str | None = None,
     ) -> dict[str, Any]:
-        return await self.github.execute(
+        result = await self.github.execute(
             action, payload=payload,
             human_approved=human_approved, verify=verify,
         )
+        if auto_helix and getattr(self, 'auto_missions', True):
+            mid = mission_id or f"auto-{action}"
+            if mid not in self.helix.missions:
+                self.helix.start_mission(mid, {action})
+            vid = verifier_id or f"verifier-{action}-{int(time.time())}"
+            rb = readback_ref or f"readback://{action}/{int(time.time())}"
+            try:
+                self.record_mission_step(mid, result, {action}, executor_id, vid, rb)
+            except Exception:
+                pass
+        return result
 
     def github_execute_sync(self, *args, **kwargs) -> dict[str, Any]:
         return self.github.execute_sync(*args, **kwargs)
