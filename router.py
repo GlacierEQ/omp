@@ -321,3 +321,49 @@ class ModelRouter:
         if not isinstance(payload, dict):
             return
         self._last_selected_id = payload.get("last_selected_model") or None
+
+
+class AutoRouter:
+    """Workflowed auto-routing - picks smart powerful models by default, falls back automatically."""
+
+    def __init__(self, router: ModelRouter | None = None, helix=None):
+        self.router = router or ModelRouter()
+        self.helix = helix
+        self._history: list[dict] = []
+
+    def route(self, task_type: str = "coding", required_capabilities: tuple = ("coding",), min_context: int = 32768, **kwargs) -> RouterDecision:
+        req = TaskRequest(
+            task_type=task_type,
+            required_capabilities=required_capabilities,
+            min_context_window=min_context,
+            **kwargs
+        )
+        decision = self.router.select(req)
+        self._history.append({
+            "task_type": task_type,
+            "selected": decision.selected.id if decision.selected else None,
+            "fallbacks": len(decision.fallback_chain)
+        })
+        return decision
+
+    def route_for_mission(self, mission_id: str, criterion: str | None = None):
+        if self.helix and mission_id in self.helix.missions:
+            m = self.helix.missions[mission_id]
+            # Route based on mission needs - prefer powerful models
+            return self.route(task_type="reasoning", required_capabilities=("reasoning", "coding", "analysis"), min_context=131072)
+        return self.route(task_type="reasoning", required_capabilities=("reasoning", "coding"), min_context=65536)
+
+    def auto_execute(self, func, task_type: str = "coding", **kwargs):
+        decision = self.route(task_type=task_type, **kwargs)
+        last_err = None
+        for model in [decision.selected] + list(decision.fallback_chain[1:]) if decision.selected else decision.fallback_chain:
+            if model is None:
+                continue
+            try:
+                result = func(model=model)
+                self.router.record_attempt(decision, model.id, success=True)
+                return result, model.id
+            except Exception as e:
+                last_err = e
+                decision = self.router.advance_on_failure(decision, model.id, error=str(e))
+        raise last_err or RuntimeError("All models failed")
