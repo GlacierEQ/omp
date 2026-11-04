@@ -1,0 +1,35 @@
+schema_version: 1
+name: omp-ruled-workflow
+mode: maximum
+persona: power_persona
+phases:
+  - id: route
+    action: auto_route
+    model: best_powerful
+    parallel: false
+  - id: analyze
+    action: helix_verify_analyze
+    parallel: false
+  - id: batch_plan
+    action: mission_batch_plan
+    parallel: false
+  - id: execute
+    action: swarm_batch_execute
+    parallel: true
+    max_workers: 32
+  - id: verify
+    action: independent_verification
+    parallel: true
+    require_different_verifier: true
+  - id: certify
+    action: helix_certify
+    parallel: false
+    gate: promotion_only
+rules:
+  fail_open_progress: true
+  fail_closed_promotion: true
+  tension_not_force: true
+  no_self_certification: true
+  coverage_based: true
+  batch_aggressive: true
+  auto_route: true

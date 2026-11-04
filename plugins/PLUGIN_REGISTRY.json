@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "plugins": [
+    {"id": "helix-core", "enabled": true, "priority": 1},
+    {"id": "auto-router", "enabled": true, "priority": 2},
+    {"id": "mission-batch", "enabled": true, "priority": 3},
+    {"id": "power-swarm", "enabled": true, "priority": 4},
+    {"id": "mcp-dynamic", "enabled": true, "priority": 5},
+    {"id": "github-integration", "enabled": true, "priority": 6},
+    {"id": "receipts-verify", "enabled": true, "priority": 7}
+  ],
+  "auto_load": true
+}

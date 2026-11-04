@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skills": [
+    {"id": "helix-orchestration", "enabled": true, "level": "max", "desc": "Double helix enforcement - tension not force"},
+    {"id": "auto-routing", "enabled": true, "level": "max", "desc": "Workflowed routing to powerful models"},
+    {"id": "coverage-optimization", "enabled": true, "level": "max", "desc": "Prioritize closing uncovered criteria"},
+    {"id": "mission-batching", "enabled": true, "level": "max", "desc": "Proactive batch execution"},
+    {"id": "independent-verification", "enabled": true, "level": "max", "desc": "executor != verifier enforcement"},
+    {"id": "evidence-verification", "enabled": true, "level": "max", "desc": "Tamper-evident receipts"},
+    {"id": "power-swarm", "enabled": true, "level": "max", "desc": "32 concurrent workers"},
+    {"id": "mcp-dynamic", "enabled": true, "level": "max", "desc": "Dynamic discovery, no artificial limits"}
+  ],
+  "auto_load": true
+}

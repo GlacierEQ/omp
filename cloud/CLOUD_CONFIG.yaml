@@ -1,0 +1,8 @@
+schema_version: 1
+providers: []
+auth_method: injected
+no_hardcoded_creds: true
+deployment:
+  auto_deploy: false
+  require_confirmation: true
+  helix_enforced: true
