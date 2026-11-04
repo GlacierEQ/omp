@@ -1,0 +1,45 @@
+{
+  "attempts": 1,
+  "authority_decision": "authorized",
+  "caller": "GlaciereqSDK/GitHubClient",
+  "capability": "github",
+  "completed_at": 1793763862.7666137,
+  "connector": "github",
+  "covered_criteria": [],
+  "depends_on": [],
+  "error": null,
+  "evidence_refs": [],
+  "execution_result": "executed_unverified",
+  "executor": "GlacierEQ/sdk",
+  "executor_id": "GlacierEQ/sdk",
+  "idempotency_key": "gh:get_repository:{\"owner\": \"o\", \"repo\": \"r\"}",
+  "mission_id": null,
+  "operation": "get_repository",
+  "readback_ref": null,
+  "receipt_sha256": "aa5a18d78f16cb336ba0b691c1576685bfff7bd91088239d44d0b3e12d3cec6b",
+  "result": {
+    "action": "get_repository",
+    "connector": "github",
+    "executed": true,
+    "policy": {
+      "action": "read",
+      "allowed": true,
+      "authority_mode": "active_mission_authority",
+      "connector": "github",
+      "executed": false,
+      "reason": "read operation allowed"
+    },
+    "reason": "no independent verification/readback - cannot complete",
+    "result": {
+      "id": 1
+    },
+    "status": "executed_unverified",
+    "verified": false
+  },
+  "schema": "glaciereq.sdk.receipt.v1",
+  "source_sha": null,
+  "task_id": "gh-get_repository-1793763862",
+  "trace_id": "gh-get_repository-1793763862",
+  "verification_result": "FAIL",
+  "verifier_id": null
+}

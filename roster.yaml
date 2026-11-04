@@ -1,0 +1,195 @@
+schema_version: 1
+roster_id: omp.free-models.v1
+observed_at_utc: "2026-11-03T00:00:00+00:00"
+source: community-curated
+note: >
+  All entries are free-tier claims from public provider documentation. None have been
+  live-verified in this workspace. Treat status as a hypothesis until the router or an
+  operator confirms a successful call. Do not record credentials here.
+models:
+  - id: meta-llama-3.1-8b-instruct
+    provider: meta
+    endpoint: https://api.meta.ai/v1/chat/completions
+    context_window: 131072
+    capabilities: [chat, coding, reasoning, analysis, instruction_following]
+    best_for: [general_purpose, coding, reasoning]
+    rate_limits:
+      requests_per_minute: 20
+      requests_per_day: 400
+    cost:
+      input_per_1m: 0.0
+      output_per_1m: 0.0
+      currency: USD
+    capability_scores:
+      coding: 7.5
+      reasoning: 7.0
+      chat: 8.0
+      analysis: 7.0
+      instruction_following: 7.5
+    status: unverified
+    last_verified: null
+    notes: Llama 3.1 8B Instruct, dense free-tier model.
+
+  - id: google-gemma-2-9b-it
+    provider: google
+    endpoint: https://generativelanguage.googleapis.com/v1beta/models/gemma-2-9b-it:generateContent
+    context_window: 8192
+    capabilities: [chat, coding, reasoning, analysis, instruction_following]
+    best_for: [general_purpose, reasoning, analysis]
+    rate_limits:
+      requests_per_minute: 15
+      requests_per_day: 1000
+    cost:
+      input_per_1m: 0.0
+      output_per_1m: 0.0
+      currency: USD
+    capability_scores:
+      coding: 7.0
+      reasoning: 7.5
+      chat: 7.5
+      analysis: 7.5
+      instruction_following: 7.0
+    status: unverified
+    last_verified: null
+    notes: Gemma 2 9B Instruct via Google Generative Language API (free tier).
+
+  - id: qwen2.5-7b-instruct
+    provider: alibaba
+    endpoint: https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation
+    context_window: 131072
+    capabilities: [chat, coding, reasoning, analysis, instruction_following, multilingual]
+    best_for: [coding, reasoning, multilingual]
+    rate_limits:
+      requests_per_minute: 10
+      requests_per_day: 500
+    cost:
+      input_per_1m: 0.0
+      output_per_1m: 0.0
+      currency: USD
+    capability_scores:
+      coding: 8.0
+      reasoning: 7.5
+      chat: 7.5
+      analysis: 7.0
+      instruction_following: 7.5
+      multilingual: 8.5
+    status: unverified
+    last_verified: null
+    notes: Qwen2.5-7B Instruct via DashScope (free tier).
+
+  - id: deepseek-chat
+    provider: deepseek
+    endpoint: https://api.deepseek.com/chat/completions
+    context_window: 131072
+    capabilities: [chat, coding, reasoning, analysis, instruction_following]
+    best_for: [coding, reasoning]
+    rate_limits:
+      requests_per_minute: 30
+      requests_per_day: 2000
+    cost:
+      input_per_1m: 0.0
+      output_per_1m: 0.0
+      currency: USD
+    capability_scores:
+      coding: 8.5
+      reasoning: 8.0
+      chat: 7.5
+      analysis: 7.5
+      instruction_following: 8.0
+    status: unverified
+    last_verified: null
+    notes: DeepSeek Chat via DeepSeek API (free tier, subject to change).
+
+  - id: microsoft-phi-3.5-mini-instruct
+    provider: microsoft
+    endpoint: https://api.inference.endpoints.microsoft.com/phi-3.5-mini-instruct
+    context_window: 131072
+    capabilities: [chat, coding, reasoning, instruction_following]
+    best_for: [general_purpose, reasoning, low_latency]
+    rate_limits:
+      requests_per_minute: 20
+      requests_per_day: 1000
+    cost:
+      input_per_1m: 0.0
+      output_per_1m: 0.0
+      currency: USD
+    capability_scores:
+      coding: 7.0
+      reasoning: 7.0
+      chat: 8.0
+      analysis: 6.5
+      instruction_following: 7.5
+    status: unverified
+    last_verified: null
+    notes: Phi-3.5-mini Instruct, small dense model optimized for latency.
+
+  - id: mistral-small-3.1-24b-instruct
+    provider: mistral
+    endpoint: https://api.mistral.ai/v1/chat/completions
+    context_window: 32768
+    capabilities: [chat, coding, reasoning, analysis, instruction_following, multilingual]
+    best_for: [reasoning, analysis, multilingual]
+    rate_limits:
+      requests_per_minute: 10
+      requests_per_day: 500
+    cost:
+      input_per_1m: 0.0
+      output_per_1m: 0.0
+      currency: USD
+    capability_scores:
+      coding: 7.5
+      reasoning: 8.0
+      chat: 8.0
+      analysis: 8.0
+      instruction_following: 7.5
+      multilingual: 8.0
+    status: unverified
+    last_verified: null
+    notes: Mistral Small 3.1 24B Instruct via Mistral API (free tier).
+
+  - id: cohere-command-r-plus
+    provider: cohere
+    endpoint: https://api.cohere.ai/v1/chat
+    context_window: 128000
+    capabilities: [chat, reasoning, analysis, instruction_following, tool_use]
+    best_for: [analysis, reasoning, tool_use]
+    rate_limits:
+      requests_per_minute: 10
+      requests_per_day: 500
+    cost:
+      input_per_1m: 0.0
+      output_per_1m: 0.0
+      currency: USD
+    capability_scores:
+      coding: 6.5
+      reasoning: 7.5
+      chat: 8.0
+      analysis: 8.5
+      instruction_following: 8.0
+      tool_use: 8.5
+    status: unverified
+    last_verified: null
+    notes: Cohere Command R+ via Cohere API (free tier).
+
+  - id: nvidia-nemotron-mini-4b-instruct
+    provider: nvidia
+    endpoint: https://integrate.api.nvidia.com/v1/chat/completions
+    context_window: 8192
+    capabilities: [chat, coding, reasoning, instruction_following]
+    best_for: [general_purpose, low_latency]
+    rate_limits:
+      requests_per_minute: 20
+      requests_per_day: 1000
+    cost:
+      input_per_1m: 0.0
+      output_per_1m: 0.0
+      currency: USD
+    capability_scores:
+      coding: 6.5
+      reasoning: 6.5
+      chat: 7.5
+      analysis: 6.5
+      instruction_following: 7.0
+    status: unverified
+    last_verified: null
+    notes: Nemotron Mini 4B Instruct via NVIDIA API catalog (free tier).

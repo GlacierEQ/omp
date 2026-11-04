@@ -1,0 +1,19 @@
+{
+  "authorization": {
+    "status": "authorized"
+  },
+  "envelope": {
+    "caller": "GlaciereqSDK/GitHubClient",
+    "capability": "github",
+    "connector": "github",
+    "depends_on": [],
+    "idempotency_key": "gh:get_repository:{\"owner\": \"o\", \"repo\": \"r\"}",
+    "mission_id": null,
+    "operation": "get_repository",
+    "trace_id": "gh-get_repository-1793763853"
+  },
+  "record_sha256": "bc7d0efdb43aeccceb77b283911d6b436579597cd2498ec251ecd31348bfea52",
+  "recorded_at": 1793763853.586243,
+  "schema": "glaciereq.sdk.invocation-record.v1",
+  "task_id": "gh-get_repository-1793763853"
+}

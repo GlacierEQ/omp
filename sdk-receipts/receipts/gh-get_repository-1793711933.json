@@ -1,0 +1,41 @@
+{
+  "attempts": 1,
+  "authority_decision": "authorized",
+  "caller": "GlaciereqSDK/GitHubClient",
+  "capability": "github",
+  "completed_at": 1793711933.976213,
+  "connector": "github",
+  "depends_on": [],
+  "error": null,
+  "execution_result": "completed",
+  "executor": "GlacierEQ/sdk",
+  "idempotency_key": "gh:get_repository:{\"owner\": \"GlacierEQ\", \"repo\": \"computer-user\"}",
+  "mission_id": null,
+  "operation": "get_repository",
+  "receipt_sha256": "91d6fd77b4852effa58183ba3c0fa7d8e8bc534985f3c949c8928203890487fa",
+  "result": {
+    "action": "get_repository",
+    "connector": "github",
+    "executed": true,
+    "policy": {
+      "action": "read",
+      "allowed": true,
+      "authority_mode": "active_mission_authority",
+      "connector": "github",
+      "executed": false,
+      "reason": "read operation allowed"
+    },
+    "reason": "provider-backed verification passed",
+    "result": {
+      "id": 1,
+      "name": "computer-user"
+    },
+    "status": "completed",
+    "verified": true
+  },
+  "schema": "glaciereq.sdk.receipt.v1",
+  "source_sha": null,
+  "task_id": "gh-get_repository-1793711933",
+  "trace_id": "gh-get_repository-1793711933",
+  "verification_result": "PASS"
+}

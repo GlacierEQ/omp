@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "glaciereq-sdk"
+version = "1.0.0"
+description = "GlacierEQ capability + quality SDK: policy-aware connectors, receipts, quality gates, model router"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "GlacierEQ-Proprietary-Open-Architecture"}
+authors = [{name = "GlacierEQ", email = "engineering@glaciereq.example"}]
+keywords = ["capability", "connector", "receipt", "quality", "router", "github"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+
+[project.optional-dependencies]
+dev = ["ruff", "pytest"]
+
+[tool.setuptools]
+packages = ["sdk"]
+
+[tool.setuptools.package-data]
+sdk = ["config/*.json", "py.typed"]

@@ -1,0 +1,37 @@
+{
+  "attempts": 1,
+  "authority_decision": "authorized",
+  "caller": "GlaciereqSDK/GitHubClient",
+  "capability": "github",
+  "completed_at": 1793706602.4941456,
+  "connector": "github",
+  "depends_on": [],
+  "error": null,
+  "execution_result": "blocked",
+  "executor": "GlacierEQ/sdk",
+  "idempotency_key": "gh:get_repository:{\"owner\": \"GlacierEQ\", \"repo\": \"computer-user\"}",
+  "mission_id": null,
+  "operation": "get_repository",
+  "receipt_sha256": "eb724f44ff41ea6487c23c16c7e14d2e02d040fa21f752fc2de3b7f8d790b31e",
+  "result": {
+    "action": "get_repository",
+    "connector": "github",
+    "executed": false,
+    "policy": {
+      "action": "get_repository",
+      "allowed": false,
+      "authority_mode": "none",
+      "connector": "github",
+      "executed": false,
+      "reason": "operation not declared"
+    },
+    "reason": "operation not declared",
+    "status": "blocked",
+    "verified": false
+  },
+  "schema": "glaciereq.sdk.receipt.v1",
+  "source_sha": null,
+  "task_id": "gh-get_repository-1793706602",
+  "trace_id": "gh-get_repository-1793706602",
+  "verification_result": "FAIL"
+}
