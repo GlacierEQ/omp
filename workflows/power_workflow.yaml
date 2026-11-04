@@ -1,0 +1,26 @@
+schema_version: 1
+name: omp-power-workflow
+mode: aggressive
+phases:
+  - name: analyze
+    action: helix_analyze
+    parallel: false
+  - name: select_priorities
+    action: helix_select_batch
+    parallel: false
+  - name: execute_batch
+    action: mission_batch_execute
+    parallel: true
+    max_concurrent: 32
+  - name: verify_independent
+    action: helix_verify
+    parallel: true
+  - name: certify
+    action: helix_certify_only
+    parallel: false
+    gate: promotion_only
+rules:
+  fail_closed_promotion: true
+  fail_open_progress: true
+  no_short_runs: true
+  batch_related: true
