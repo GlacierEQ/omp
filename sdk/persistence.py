@@ -52,3 +52,36 @@ class DurableMissionStore(MissionStore):
         # Keep all for now - could add timestamp-based GC
         # Just ensure file stays bounded by not growing unbounded
         self.save(data)
+
+
+class GlobalStateStore:
+    """Central durable state for all omp subsystems."""
+
+    def __init__(self, path: str | Path | None = None):
+        self.path = Path(path) if path else Path.home() / '.omp' / 'global_state.json'
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+
+    def save(self, key: str, data: Any):
+        state = self.load_all()
+        state[key] = data
+        state['_meta'] = {'updated': __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()}
+        tmp = self.path.with_suffix('.tmp')
+        with open(tmp, 'w') as f:
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            json.dump(state, f, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+            fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+        os.replace(tmp, self.path)
+
+    def load_all(self) -> dict:
+        if not self.path.exists():
+            return {}
+        try:
+            with open(self.path) as f:
+                return json.load(f)
+        except Exception:
+            return {}
+
+    def load(self, key: str, default=None):
+        return self.load_all().get(key, default)
