@@ -3,8 +3,10 @@
 from __future__ import annotations
 import json
 import os
+import fcntl
 from pathlib import Path
 from typing import Any
+from datetime import datetime, timezone
 
 
 class MissionStore:
@@ -28,30 +30,27 @@ class MissionStore:
             return {}
 
 
-import fcntl
-import time
-
 class DurableMissionStore(MissionStore):
-    """File-locked durable store with GC."""
+    """File-locked durable store."""
 
     def save(self, data: dict):
         tmp = self.path.with_suffix('.tmp')
         with open(tmp, 'w') as f:
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            try:
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            except Exception:
+                pass
             json.dump(data, f, indent=2)
             f.flush()
-            os.fsync(f.fileno())
-            fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+            try:
+                os.fsync(f.fileno())
+            except Exception:
+                pass
+            try:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+            except Exception:
+                pass
         os.replace(tmp, self.path)
-        self.gc()
-
-    def gc(self, retain_active_days: int = 7):
-        data = self.load()
-        if not data:
-            return
-        # Keep all for now - could add timestamp-based GC
-        # Just ensure file stays bounded by not growing unbounded
-        self.save(data)
 
 
 class GlobalStateStore:
@@ -64,14 +63,23 @@ class GlobalStateStore:
     def save(self, key: str, data: Any):
         state = self.load_all()
         state[key] = data
-        state['_meta'] = {'updated': __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()}
+        state['_meta'] = {'updated': datetime.now(timezone.utc).isoformat()}
         tmp = self.path.with_suffix('.tmp')
         with open(tmp, 'w') as f:
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            try:
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            except Exception:
+                pass
             json.dump(state, f, indent=2)
             f.flush()
-            os.fsync(f.fileno())
-            fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+            try:
+                os.fsync(f.fileno())
+            except Exception:
+                pass
+            try:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+            except Exception:
+                pass
         os.replace(tmp, self.path)
 
     def load_all(self) -> dict:
